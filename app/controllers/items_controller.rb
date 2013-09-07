@@ -1,7 +1,11 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!, :except => [:index]
+<<<<<<< HEAD:big_pie/app/controllers/items_controller.rb
+  before_filter :set_communities, only: [:index, :show, :new, :edit]
+=======
   before_filter :set_communities_joined, only: [:index, :show, :edit, :new]
+>>>>>>> f84a9548f08b966fe8e68c4329a3bcc363458a6c:app/controllers/items_controller.rb
 
   layout 'two_columns'
 
@@ -26,6 +30,10 @@ class ItemsController < ApplicationController
       @communities_joined = current_user.communities if user_signed_in?
     end
     @items = @items.order(updated_at: :desc).paginate(page: params[:page], per_page: 10)
+<<<<<<< HEAD:big_pie/app/controllers/items_controller.rb
+    
+=======
+>>>>>>> f84a9548f08b966fe8e68c4329a3bcc363458a6c:app/controllers/items_controller.rb
     if request.xhr?
       sleep(1)
       render @items
@@ -35,19 +43,18 @@ class ItemsController < ApplicationController
   # GET /items/1
   # GET /items/1.json
   def show
-    @communities = Community.all
+    
   end
 
   # GET /items/new
   def new
-    @item = Item.new
-    @communities = Community.all
+    @item = Item.new    
   end
 
   # GET /items/1/edit
   def edit
     authorize_action_for(@item)
-    @communities = Community.all
+    
   end
 
   # POST /items
@@ -104,6 +111,11 @@ class ItemsController < ApplicationController
       params.require(:item).permit(:user_id, :photo, :url_ref, :description, :starts_count, :tag_list, :remote_photo_url, :remove_photo)
     end
 
+<<<<<<< HEAD:big_pie/app/controllers/items_controller.rb
+    def set_communities
+      @communities = Community.all
+    end
+=======
     def set_communities_joined    
       if params[:user_id]    
         @communities_joined = User.find(params[:user_id]).communities 
@@ -112,4 +124,5 @@ class ItemsController < ApplicationController
       end
     end
 
+>>>>>>> f84a9548f08b966fe8e68c4329a3bcc363458a6c:app/controllers/items_controller.rb
 end
