@@ -1,7 +1,157 @@
 vsns
 ====
 
-: vertical sns with big pie team
+: Dev.Study - Official VSNS Repository since 2013.9.1
+
+
+#### 2013년 9월 6일 => master branch에서 작업한 내용
+
+* .idea 와 tmp 디렉토리는 불필요한 디렉토리라서 제거했습니다. 
+
+* 유닛 리더께서는 `upstream` 이라는 `remote branch`를 하나 추가하시고 https://github.com/dev-study/vsns.git 로 지정해 주신 후에 `git pull upstream master` 해 주시면 됩니다. 작업 순서는 다음과 같습니다. 
+
+  ```
+  vsns $> git remote add upstream https://github.com/dev-study/vsns.git
+  vsns $> git checkout master
+  vsns %> git pull upstream master
+  ```
+
+* 이렇게 하면 dev-study/vsns 저장소의 master branch를 본인의 로컬 master 브랜치로 pull 할 수 있게 되는 것이죠. 그리고 나서 유닛 저장소로 git push origin master 하시면 최종적으로 dev-study/vsns 저장소의 업데이트된 내용이 유닛 저장소로 가져와 머지하게 되는 것입니다.   
+
+#### 2013년 9월 6일 => hschoi branch을 master branch로 머지 (v0.1.3)
+
+  * 2013년 9월 5일 자정 `Midnight Hangout Code Review` 에서 진행되었던 `refactoring` 결과를 `master branch` 로 머지하고 `git tag` 를 `v0.1.3` 으로 생성하였습니다.
+
+  * 공지한 바와 같이 이제(2013.9.6 06:00)부터는 각 유닛 리더는 이 버전(v0.1.3)을 `fork` 합니다. 그리고 유닛 멤버는 유닛 리더의 저장소를 `git clone` 합니다.
+
+정리하면,
+
+1. 각 유닛의 리더는 dev-study/vsns 저장소(v0.1.3) 를 fork합니다. 그리고 유닛 멤버는 유닛 리더의 저장소를 clone 합니다. 이에 대해서는 이준헌님이 올려 주신 링크를 참고하면 fork 기능을 이해하는데 많은 도움이 될 것입니다. http://blog.outsider.ne.kr/865
+
+2. 유닛 멤버들은 각자의 branch를 생성하여 코딩 작업을 합니다.
+
+    ```
+    $ git checkout -b [본인의 branch명]
+    ```
+
+3. 유닛 멤버는 본인의 코딩 작업이 완료되면 clone 받았던 리더의 저장소(github 내의 리더 저장소)로 커밋내용을 push 하는데, 아래와 같은 순서로 작업을 합니다.
+
+    ```
+    $ git add .
+    $ git commit -m "some commit messages"
+    $ git push origin [본인의 branch명]
+    ```
+
+
+4. 이제 유닛의 각 멤버가 협업을 통해서 작업을 완료하면, 유닛 리더는 유닛멤버들의 branch를 머지하고 (이때 약간의 커밋 충돌이 있을 수 있는데 리더는 이러한 충돌부분을 해결해야 함) 유닛 리더는 최종 `master branch` 를 `pull request` 하면 됩니다. 유닛 리더는 아래와 같은 순서로 작업을 합니다.
+    
+    ```
+    $ git pull origin [유닛멤버의 branch명]  # 유닛멤버의 수 만큼 ... 
+    $ git checkout master   
+    $ git merge [유닛멤버의 branch명]   # 유닛멤버의 수 만큼 ...
+    ```
+
+5. 멤버 branch의 머지 작업이 완료되면 유닛 리더는 아래와 같이 git push 명령을 수행합니다. 
+
+    ```
+    $ git push origin master
+    ```
+
+6. 이제 유닛 리더는 github에 접속하여 본인의 계정으로 fork한 dev-study/vsns 저장소로 `PULL REQUEST` 를 합니다. 여기 까지의 작업은 각 유닛에서 수행하는 것입니다.   
+
+
+7. 이렇게 8개의 유닛에서 `pull request` 가 들어오면 커밋터로 지정된 멤버들은 `pull request` 커밋들을 검토하고 최종 master 버전으로 `merge` 하면 됩니다.
+
+8. 절차상의 문제가 있다고 판단되시면 언제든지 연락을 주시기 바랍니다.
+
+
+#### 2013년 9월 2일 => 몇가지 버그를 수정하였습니다. 
+
+* 최종 tag 버전은 v0.1.2 입니다. v0.1.1 버전에 버그수정한 것이 반영이 안되었습니다. 죄송합니다. 
+
+#### 당분간 VSNS의 기능추가는 없습니다. 
+
+* 최종 tag 버전은 v0.1.1 입니다. 
+
+#### 2013년 9월 1일 => Community 관련 기능 보완 (bbugguj)
+
+##### 1. ItemController의 show, edit, new 액션에서 before_filter를 통해 set_communities_joined를 처리하도록 함
+
+ * 이유: layouts/shared/_my_communities.html.erb에서 @communities_joined를 사용하여 community 목록을 구성하는데, show.html, edit.html, new.html 에서는 @communities_joined가 nil이어서 오류 발생
+ * 관련 파일
+  - controllers/items_controller.rb
+
+##### 2. Community 추가 후 My Join Communities 의 count를 변경하도록 수정
+
+ * 관련 파일
+  - view/communities/create.js.erb
+  - view/layouts/shared/_my_communities.html.erb
+  - controllers/communities_controller.rb
+
+##### 3. Community 최초 추가시 My Join Communities 목록에 반영 안되는 부분 수정
+
+ * 수정부분: @communities_joined.size가 0인 경우도 ul 영역을 생성하도록 수정.
+
+ * 이유: view/communities/create.js.erb에서는 #community_list 영역에 새로 생성한 cummunity를 추가하도록 구현되어 있음.
+communities.size가 0인 경우에도 #community_list 영역을 생성해주어야 이 부분이 정상적으로 동작함
+
+ * 관련 파일 
+  - view/layouts/shared/_my_communities.html.erb
+
+
+
+## Dev.Study VSNS Project v0.1.0 just pushed !!!
+: as of 2013년 9월 1일, 18:45am
+
+* 이제 Big Pie 팀프로젝트로 공동(?) 개발된 `vsns Blog project`를 master branch에 머지하고 v0.1.0 태그를 달아서 github에 push했습니다. 
+
+* 상당 부분의 refactoring 과정이 필요하고, 약간의 버그가 있을 수 있습니다. 이러한 부분에 대한 멤버들의 손질이 필요합니다. 
+
+* 본 프로젝트의 소스를 공유하여 작업을 하고자 할 때는 이전까지 방식과는 달리 https://github.com/dev-study/vsns 로 접속하신 후 브라우저 화면 우측상단에 있는 `Fork` 버튼을 클릭하여 자신의 계정으로 forking 하신 후에 작업을 하시고 변경내용에 대한 머지를 원할 경우에는 `pull request` 작업을 통하여 하여 주시기 바랍니다.
+
+* Forking과 Pull Request에 대한 사항 github 홈페이지를 참조하시 바랍니다.
+
+
+#### 2013년 9월 01일, hschoi 브랜치에 추가된 내용 => 커뮤니티 기능추가
+
+* `Community` 기능이 추가되었습니다. 이를 위해 `Community` 리소스를 추가했고, User와 `Community` 모델을 연결을 다대다로 연결하기 위해서 `Associate`라는 join 모델을 추가했습니다.
+
+  ```
+  class Community < ActiveRecord::Base
+    has_many :associates, dependent: :destroy
+    has_many :users, :through => :associates
+    has_many :items, :through => :users
+  end
+
+  class Associate < ActiveRecord::Base
+    belongs_to :user
+    belongs_to :community
+
+    before_save :default_values
+
+    def default_values
+      self.access_type = "member"
+    end
+  end
+  ```
+
+* 그리고 `User` 모델에는 아래와 같이 관계설정을 추가했습니다. 
+
+  in app/models/user.rb
+
+  ```
+  has_many :associates
+  has_many :communities, :through => :associates
+  ```
+
+
+* Community 기능은 다음과 같습니다. 
+
+  1. `Community` 생성기능 : 우측 `My Join Communities` 위젯의 아래에 보면 `Create a community` 링크를 클릭하면 바로 아래에 입력창이 보이게 됩니다. 입력창에 커뮤니티명을 입력하고 엔터키를 누르면 ajax 기능을 이용하여 `My Join Communities` 목록에 추가됩니다. 이 항목에 대한 유효성 검증은 두가지입니다. `:presence => true`, `:uniqueness => true`.
+  2. `My Join Communities` 에는 본인이 멤버로 등록된 Community가 보이게 되는데, 10개가 넘어갈 때는 10개만 표시되고 그 아래에 10개를 뺀 수를 `more...` 링크로 보여줍니다. 이 링크를 클릭하면 전체 목록을 볼 수 있는 페이지로 이동합니다. 
+  3. 각 `Community` 항목의 오른쪽에는 가입(join)/탈퇴(leave) 링크가 있어서 편리하게 가입 및 탈퇴가 가능하도록 했습니다. 
+  4. `My Join Communities` 에 보이는 각 `Community` 링크를 클릭하면 가입된 모든 멤버의 `items` 들이 보여집니다. 
+  5. 상단 메뉴 중 `My Communities` 는 본인인 개설한 Community 목록을 보여 줍니다. 
 
 
 #### 2013년 8월 30일 (#2), hschoi branch에서 dkim branch를 생성함. 
@@ -547,4 +697,3 @@ vsns/bigpie $ heroku run rake db:schema:dump
 4. 그리고 follow 기능을 추가하기 위해서 users_controller.rb 파일을 추가했습니다. 여기에는 followings, followers, follow, unfollow 액션을 정의했습니다. 
 5. User 모델에는 avatar 속성을 추가해서 개인 프로필 사진을 올리 수 있게 했습니다. 사진이 없는 경우 디폴트 이미지(profile_default.png)가 보이도록 했습니다. 그리고 Relationship 이라는 모델을 만들어 User 모델과의 관계설정을 했습니다. 또한, User 모델에는 following?, follow!, unfollow! 메소드를 정의했습니다. 
 6. relationships_controller.rb 파일은 현재로서는 딱히 필요가 없습니다. 
-
