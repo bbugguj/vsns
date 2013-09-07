@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD:big_pie/db/schema.rb
-ActiveRecord::Schema.define(version: 20130830084854) do
-=======
 ActiveRecord::Schema.define(version: 20130901031803) do
->>>>>>> f84a9548f08b966fe8e68c4329a3bcc363458a6c:db/schema.rb
 
   create_table "associates", force: true do |t|
     t.integer  "user_id"
