@@ -4,6 +4,64 @@ vsns
 : Dev.Study - Official VSNS Repository since 2013.9.1
 
 
+#### 2013년 9월 9일 => jaehuejang branch에서 작업한 내용 => twitter 로그인 연동
+
+##### 1. 참고자료
+* http://railscasts.com/episodes/235-omniauth-part-1
+* http://railscasts.com/episodes/236-omniauth-part-2
+
+##### 2. 작업내용
+* omniauth gem 추가 (gem 'omniauth', gem 'omniauth-twitter')
+* config/initializers/omniauth.rb 파일에 provider 연동 정보 설정(CONSUMER_KEY, CONSUMER_SECRET)
+* Authentication model 추가
+* User 모델과 Authentication 모델 releation 관계 설정
+
+```
+class Authentication < ActiveRecord::Base
+  belongs_to :user
+end
+
+class User < ActiveRecord::Base
+  has_many :authentications           
+end
+```
+* AuthenticationsController 추가(action: index, create, destroy)
+  * index: 전체 authentications 목록 보여줌
+  * create: provider service로 인증 후 callback되었을때, request.env["omniauth.auth"] 정보 기반으로 로그인
+  * destroy: authentication 정보 제거
+* RegistrationsController 추가 (Devise::RegistrationsController의 child로 작성)
+* route 수정
+
+```
+  resources :authentications, only: [:index, :destroy]
+  get '/auth/:provider/callback' => 'authentications#create'
+  devise_for :users, :controllers => { :registrations => 'registrations' }  
+```
+* User model에 omniauth 정보 저장하는 method 추가
+
+```
+class User < ActiveRecord::Base
+  def apply_omniauth(omniauth)
+    authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
+  end
+end
+```
+* 각종 view template 추가/수정
+  * views/authentications
+      * partial view로 _providers.html.erb, _show.html.erb 추가
+      * index.html.erb 추가
+      * authentications.css.scss에 authentications view template을 위한 css 작성
+  * views/devise
+      * registrations/new.html.erb, sessions/new.html.erb에 <%= render "authentications/providers" %> 추가
+  * providers image 추가
+      * app/assets/images에 facebook, google, linkedin, openid, twitter image 추가
+      
+##### 3. 보완사항
+* oauth 연동 후, 연동한 service의 profile image와 name을 보여주도록 해야 함
+* facebook, google, linkedin, github 연동 필요
+* authentications 정보 관리 기능 필요
+
+
 #### 2013년 9월 6일 => master branch에서 작업한 내용
 
 * .idea 와 tmp 디렉토리는 불필요한 디렉토리라서 제거했습니다. 
