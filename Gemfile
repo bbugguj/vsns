@@ -92,6 +92,9 @@ end
 gem 'bcrypt-ruby'
 #gem 'bcrypt-ruby', '~> 3.0.0'
 
+gem 'omniauth'
+gem 'omniauth-twitter'
+
 # Use unicorn as the app server
 # gem 'unicorn'
 

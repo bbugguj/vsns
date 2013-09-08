@@ -54,6 +54,8 @@ class User < ActiveRecord::Base
   has_many :communities_owned_by_me, class_name: 'Community', 
            foreign_key: :owner_id
 
+  has_many :authentications           
+
 ###############################################################################
 ##
 ##   Definitions of Method      
@@ -99,6 +101,10 @@ class User < ActiveRecord::Base
   end
   def unfollow!(other_user)
     relationships.find_by(follower_id: other_user.id).destroy!
+  end
+
+  def apply_omniauth(omniauth)
+    authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
   end
 
 end

@@ -1,5 +1,8 @@
 BigPie::Application.routes.draw do
 
+  resources :authentications, only: [:index, :destroy]
+  get '/auth/:provider/callback' => 'authentications#create'
+
   root 'items#index'
   
   get 'users/:id/communities' => 'users#communities', as: :my_communities
@@ -14,15 +17,14 @@ BigPie::Application.routes.draw do
   post 'communities/:community_id/join' => 'users#join', as: :join_community
   delete 'communities/:community_id/leave' => 'users#leave', as: :leave_community
 
-
-
   resources :communities
 
   resources :relationships, only: [:create, :destroy]
   resources :items do
     resources :comments
   end
-  devise_for :users
+  
+  devise_for :users, :controllers => { :registrations => 'registrations' }
   resources :users do
     member do
       get :followings, :followers
